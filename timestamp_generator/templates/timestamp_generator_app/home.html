@@ -1,0 +1,63 @@
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Homepage</title>
+</head>
+<body>
+    <h1>Welcome to the Timestamp Generator</h1>
+    <form id="urlForm" method="POST" action="{% url 'generate_timestamp' %}">
+        {% csrf_token %}
+        <label for="youtubeUrl">Enter YouTube URL:</label>
+        <input type="text" id="youtubeUrl" name="youtubeUrl" required>
+        <button type="submit" id ="submitButton">Generate Timestamp</button>
+    </form>
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById("submitButton").addEventListener("click", function() {
+            var form = document.getElementById("urlForm");
+            var formData = new FormData(form);
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'generate_timestamp' %}");
+            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        document.getElementById("result").innerHTML = response.message;
+                    } else {
+                        console.error("Error submitting form");
+                    }
+                }
+            };
+            xhr.send(formData);
+        });
+    </script>
+</body>
+</html> {% endcomment %}
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Homepage</title>
+</head>
+<body>
+    <h1>Welcome to the Timestamp Generator</h1>
+    <form id="urlForm" method="POST" action="{% url 'generate_timestamp' %}">
+        {% csrf_token %}
+        <label for="youtubeUrl">Enter YouTube URL:</label>
+        <input type="text" id="youtubeUrl" name="youtubeUrl" required>
+        <button type="submit" id ="submitButton">Generate Timestamp</button>
+    </form>
+    <div id="result">
+        {% if message %}
+            <p>{{ message }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
